@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Dashboard — KEC Lost &amp; Found Portal</title>
+  <meta name="description" content="Student dashboard for the Kongu Engineering College Lost and Found Portal." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="dashboard.css" />
+</head>
+<body class="student-theme">
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar" id="sidebar">
+    
+    <!-- College brand -->
+    <div class="sidebar-brand">
+      <div class="brand-logo">KEC</div>
+      <div class="brand-text">
+        <span class="brand-name">Lost &amp; Found</span>
+        <span class="brand-role">Student Portal</span>
+      </div>
+    </div>
+
+    <!-- Navigation links -->
+    <nav class="sidebar-nav" aria-label="Student Navigation">
+      <p class="nav-section-label">Navigation</p>
+      <ul class="nav-list" id="student-nav-list">
+        <li>
+          <button class="nav-item active" id="nav-report" onclick="showSection('report')">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            Report Lost Item
+          </button>
+        </li>
+        <li>
+          <button class="nav-item" id="nav-my-reports" onclick="showSection('my-reports')">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            My Reports
+          </button>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Sidebar footer -->
+    <div class="sidebar-footer">
+      <div class="user-info" id="sidebar-user-info">
+        <div class="user-avatar" id="sidebar-avatar">S</div>
+        <div class="user-details">
+          <span class="user-name" id="sidebar-user-name">Student</span>
+          <span class="user-email" id="sidebar-user-email">Loading...</span>
+        </div>
+      </div>
+      <button class="logout-btn" id="logout-btn" onclick="logout()">Logout</button>
+    </div>
+
+  </aside>
+
+  <!-- ── MAIN CONTENT AREA ── -->
+  <div class="main-wrapper">
+
+    <!-- Top Bar -->
+    <header class="topbar">
+      <button class="menu-toggle" id="menu-toggle" onclick="toggleSidebar()" aria-label="Toggle sidebar">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="topbar-title">
+        <h1 id="page-title">Report Lost Item</h1>
+      </div>
+      <div class="topbar-right">
+        <span class="topbar-greeting" id="topbar-greeting">Welcome back!</span>
+      </div>
+    </header>
+
+    <!-- ════════════════════════════════
+         SECTION: Report Lost Item
+    ════════════════════════════════ -->
+    <main class="page-content" id="section-report">
+
+      <div class="section-header">
+        <h2 class="section-title">Report a Lost Item</h2>
+        <p class="section-desc">Fill in the details below to report an item you have lost on campus.</p>
+      </div>
+
+      <form class="report-form" id="report-form" onsubmit="submitReport(event)">
+
+        <!-- Row 1: Category + Location -->
+        <div class="form-row">
+
+          <!-- Category -->
+          <div class="form-group">
+            <label for="report-category">Item Category</label>
+            <select id="report-category" required>
+              <option value="" disabled selected>Select a category</option>
+              <option value="Mobile Phone">Mobile Phone</option>
+              <option value="Laptop / Tablet">Laptop / Tablet</option>
+              <option value="Charger / Cable">Charger / Cable</option>
+              <option value="Earphones / Headphones">Earphones / Headphones</option>
+              <option value="Wallet / Purse">Wallet / Purse</option>
+              <option value="ID Card / College Card">ID Card / College Card</option>
+              <option value="Keys">Keys</option>
+              <option value="Water Bottle">Water Bottle</option>
+              <option value="Umbrella">Umbrella</option>
+              <option value="Books / Notes">Books / Notes</option>
+              <option value="Calculator">Calculator</option>
+              <option value="Pen Drive / Hard Disk">Pen Drive / Hard Disk</option>
+              <option value="Spectacles / Sunglasses">Spectacles / Sunglasses</option>
+              <option value="Watch">Watch</option>
+              <option value="Bag / Backpack">Bag / Backpack</option>
+              <option value="Clothing / Accessories">Clothing / Accessories</option>
+              <option value="Lab Equipment">Lab Equipment</option>
+              <option value="Sports Equipment">Sports Equipment</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          <!-- Location -->
+          <div class="form-group">
+            <label for="report-location">Location Lost</label>
+            <select id="report-location" required>
+              <option value="" disabled selected>Select a location</option>
+              <option value="Classroom Block A">Classroom Block A</option>
+              <option value="Classroom Block B">Classroom Block B</option>
+              <option value="Classroom Block C">Classroom Block C</option>
+              <option value="Classroom Block D">Classroom Block D</option>
+              <option value="Library">Library</option>
+              <option value="Computer Lab">Computer Lab</option>
+              <option value="Electronics Lab">Electronics Lab</option>
+              <option value="Mechanical Workshop">Mechanical Workshop</option>
+              <option value="Physics Lab">Physics Lab</option>
+              <option value="Chemistry Lab">Chemistry Lab</option>
+              <option value="Seminar Hall">Seminar Hall</option>
+              <option value="Auditorium">Auditorium</option>
+              <option value="Canteen / Food Court">Canteen / Food Court</option>
+              <option value="Hostel">Hostel</option>
+              <option value="Bus Stand / Parking">Bus Stand / Parking</option>
+              <option value="Sports Ground">Sports Ground</option>
+              <option value="Gymnasium">Gymnasium</option>
+              <option value="Admin Block">Admin Block</option>
+              <option value="Placement Cell">Placement Cell</option>
+              <option value="Corridor / Staircase">Corridor / Staircase</option>
+              <option value="Washroom Area">Washroom Area</option>
+              <option value="Main Gate Area">Main Gate Area</option>
+              <option value="Garden / Open Area">Garden / Open Area</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+        </div>
+
+        <!-- Row 2: Date + Time -->
+        <div class="form-row">
+
+          <div class="form-group">
+            <label for="report-date">Date Lost</label>
+            <input type="date" id="report-date" required />
+          </div>
+
+          <div class="form-group">
+            <label for="report-time">Approximate Time</label>
+            <input type="time" id="report-time" required />
+          </div>
+
+        </div>
+
+        <!-- Row 3: Description -->
+        <div class="form-group full-width">
+          <label for="report-description">Description</label>
+          <textarea id="report-description" rows="4" placeholder="Describe the item (colour, brand, any identifying marks, etc.)" required></textarea>
+        </div>
+
+        <!-- Row 4: Image Upload -->
+        <div class="form-group full-width">
+          <label for="report-image">Item Image (optional)</label>
+          <div class="image-upload-area" id="image-upload-area" onclick="document.getElementById('report-image').click()">
+            <input type="file" id="report-image" accept="image/*" onchange="previewImage(event)" hidden />
+            <div class="upload-placeholder" id="upload-placeholder">
+              <svg class="upload-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                <rect x="6" y="10" width="36" height="28" rx="4" fill="none"/>
+                <circle cx="18" cy="22" r="4" fill="none"/>
+                <path d="M6 34l10-10 8 8 6-6 12 12" fill="none"/>
+              </svg>
+              <p class="upload-text">Click to upload an image</p>
+              <p class="upload-hint">JPG, PNG or WEBP — max 5 MB</p>
+            </div>
+            <img class="image-preview hidden" id="image-preview" alt="Preview of uploaded item" />
+          </div>
+          <button type="button" class="remove-image-btn hidden" id="remove-image-btn" onclick="removeImage()">Remove Image</button>
+        </div>
+
+        <!-- Submit -->
+        <div class="form-actions">
+          <button type="submit" class="submit-btn" id="submit-report-btn">
+            <span class="btn-text">Submit Report</span>
+            <span class="btn-loader hidden">Submitting...</span>
+          </button>
+          <button type="reset" class="reset-btn" onclick="resetForm()">Clear Form</button>
+        </div>
+
+        <p class="form-message" id="report-message"></p>
+
+      </form>
+    </main>
+
+    <!-- ════════════════════════════════
+         SECTION: My Reports
+    ════════════════════════════════ -->
+    <main class="page-content hidden" id="section-my-reports">
+
+      <div class="section-header">
+        <h2 class="section-title">My Reports</h2>
+        <p class="section-desc">All lost items you have reported are listed below.</p>
+      </div>
+
+      <!-- Reports list rendered via JS -->
+      <div class="reports-list" id="reports-list">
+        <!-- Filled dynamically -->
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- Sidebar overlay (for mobile) -->
+  <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+  <script src="dashboard.js"></script>
+</body>
+</html>
