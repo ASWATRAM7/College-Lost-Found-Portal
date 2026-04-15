@@ -1,1 +1,10 @@
-[]
+[
+  {
+    "id": "1776274189670",
+    "name": "despandey",
+    "email": "des@kongu.edu",
+    "password": "$2b$10$p1r2RzZ2OqyuSVurq/zm6e.I3lJHc4fo2uMeIl1K4jEiio.OCISku",
+    "role": "student",
+    "createdAt": "2026-04-15T17:29:49.672Z"
+  }
+]
