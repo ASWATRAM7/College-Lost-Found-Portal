@@ -73,8 +73,8 @@ function AuthForm({ role, mode, onSwitch, onLoginSuccess }) {
 
     try {
       const endpoint = mode === 'login'
-        ? 'http://localhost:5000/api/auth/login'
-        : 'http://localhost:5000/api/auth/register';
+        ? '/api/auth/login'
+        : '/api/auth/register';
 
       const body = mode === 'login'
         ? { email: email.trim().toLowerCase(), password, role }
@@ -256,46 +256,67 @@ export default function LoginPage() {
   return (
     <div className="login-page">
       <div className="login-overlay" />
-      <div className="login-wrapper">
-
-        {/* Brand */}
-        <div className="college-brand">
-          <h1 className="college-name">Kongu Engineering College</h1>
-          <p className="portal-title">Lost &amp; Found Portal</p>
-        </div>
-
-        {/* Tab switcher — only visible in login mode */}
-        {mode === 'login' && (
-          <div className="tab-switcher" role="tablist">
-            <button
-              role="tab"
-              className={`tab-btn ${role === 'student' ? 'active' : ''}`}
-              onClick={() => switchTab('student')}
-            >
-              Student
-            </button>
-            <button
-              role="tab"
-              className={`tab-btn ${role === 'faculty' ? 'active faculty' : ''}`}
-              onClick={() => switchTab('faculty')}
-            >
-              Faculty (Admin)
-            </button>
+      
+      <div className="login-container-split">
+        
+        {/* Left Side: Brand & Visual Showcase */}
+        <div className="login-split-brand">
+          <div className="brand-content-flow">
+            <div className="brand-logo-badge">KEC</div>
+            <h1 className="college-name-large">Kongu Engineering College</h1>
+            <h2 className="portal-title-large">Centralized Lost & Found Hub</h2>
+            <p className="brand-description">
+              A highly secure, intelligent platform designed exclusively for students and faculty to rapidly retrieve misplaced hardware, documents, and personal belongings across the campus infrastructure.
+            </p>
+            <div className="brand-graphic">
+              {/* Very minimal aesthetic geometric trace */}
+              <svg width="100%" height="80" viewBox="0 0 200 80" fill="none" stroke="currentColor">
+                <path d="M0 40 Q 50 10, 100 40 T 200 40" strokeWidth="2" stroke="rgba(255,255,255,0.15)" strokeLinecap="round" />
+                <path d="M0 50 Q 50 60, 100 30 T 200 50" strokeWidth="1" stroke="var(--student-primary)" opacity="0.6" strokeLinecap="round" strokeDasharray="4 4" />
+                <circle cx="100" cy="30" r="4" fill="var(--student-primary)" />
+                <circle cx="150" cy="45" r="3" fill="#fff" opacity="0.3" />
+              </svg>
+            </div>
           </div>
-        )}
-
-        {/* Login / Register card */}
-        <div className="login-card">
-          <AuthForm
-            role={role}
-            mode={mode}
-            onSwitch={setMode}
-          />
         </div>
 
-        <p className="login-footer">
-          &copy; 2026 Kongu Engineering College — Lost &amp; Found Portal
-        </p>
+        {/* Right Side: Auth Interaction */}
+        <div className="login-split-auth">
+          <div className="login-wrapper">
+            {/* Tab switcher — only visible in login mode */}
+            {mode === 'login' && (
+              <div className="tab-switcher" role="tablist">
+                <button
+                  role="tab"
+                  className={`tab-btn ${role === 'student' ? 'active' : ''}`}
+                  onClick={() => switchTab('student')}
+                >
+                  Student
+                </button>
+                <button
+                  role="tab"
+                  className={`tab-btn ${role === 'faculty' ? 'active faculty' : ''}`}
+                  onClick={() => switchTab('faculty')}
+                >
+                  Faculty (Admin)
+                </button>
+              </div>
+            )}
+
+            {/* Login / Register card */}
+            <div className="login-card">
+              <AuthForm
+                role={role}
+                mode={mode}
+                onSwitch={setMode}
+              />
+            </div>
+
+            <p className="login-footer">
+              &copy; 2026 Kongu Engineering College — Internal Network
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );
