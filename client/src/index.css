@@ -1,45 +1,62 @@
 /* ═══════════════════════════════════════
-   KEC Lost & Found — Global Styles
+   KEC Lost & Found — Professional Theme
 ═══════════════════════════════════════ */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --student-primary: #4f8ef7;
-  --student-dark:    #2d6fd6;
-  --student-glow:    rgba(79,142,247,0.25);
-  --faculty-primary: #a855f7;
-  --faculty-dark:    #7c3aed;
-  --faculty-glow:    rgba(168,85,247,0.25);
-  --bg-page:         #0d1117;
-  --bg-sidebar:      #111827;
-  --bg-card:         #161b2e;
-  --bg-card-hover:   #1c2340;
-  --bg-input:        rgba(255,255,255,0.05);
-  --border-color:    rgba(255,255,255,0.07);
-  --border-input:    rgba(255,255,255,0.14);
-  --text-primary:    #e6edf3;
-  --text-secondary:  #8b949e;
-  --text-muted:      #4a5568;
-  --error:           #ff6b6b;
-  --success:         #4ade80;
-  --warning:         #facc15;
-  --sidebar-width:   260px;
-  --topbar-height:   64px;
-  --radius:          12px;
-  --radius-sm:       8px;
-  --transition:      0.25s ease;
+  /* Crisp, professional college blues */
+  --student-primary: #2563eb;
+  --student-light:   #3b82f6;
+  --student-dark:    #1d4ed8;
+  --student-glow:    rgba(37, 99, 235, 0.15);
+  
+  --faculty-primary: #6366f1;
+  --faculty-light:   #818cf8;
+  --faculty-dark:    #4f46e5;
+  --faculty-glow:    rgba(99, 102, 241, 0.15);
+  
+  /* Very clean deep slate/navy background */
+  --bg-page:         #0f172a;      
+  --bg-sidebar:      #1e293b;
+  --bg-card:         #1e293b;
+  --bg-card-hover:   #253347;
+  --bg-input:        #0f172a;
+  
+  --border-color:    #334155;
+  --border-input:    #475569;
+  --glass-border:    1px solid #334155;
+  
+  --text-primary:    #f8fafc;
+  --text-secondary:  #cbd5e1;
+  --text-muted:      #94a3b8;
+  
+  --error:           #ef4444;
+  --success:         #10b981;
+  --warning:         #f59e0b;
+  
+  --sidebar-width:   280px;
+  --topbar-height:   72px;
+  --radius:          8px;
+  --radius-sm:       6px;
+  --transition:      0.2s ease-in-out;
 }
 
 html, body, #root {
-  height: 100%;
-  font-family: 'Inter', sans-serif;
-  background: var(--bg-page);
+  min-height: 100vh;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: var(--bg-page);
   color: var(--text-primary);
   overflow-x: hidden;
 }
 
 a { color: inherit; text-decoration: none; }
-button { font-family: 'Inter', sans-serif; }
-input, select, textarea { font-family: 'Inter', sans-serif; }
+button { font-family: inherit; cursor: pointer; }
+input, select, textarea { font-family: inherit; }
+
+/* Clean, standard scrollbar */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--bg-page); }
+::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--border-input); }

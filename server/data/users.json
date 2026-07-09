@@ -6,5 +6,53 @@
     "password": "$2b$10$p1r2RzZ2OqyuSVurq/zm6e.I3lJHc4fo2uMeIl1K4jEiio.OCISku",
     "role": "student",
     "createdAt": "2026-04-15T17:29:49.672Z"
+  },
+  {
+    "id": "1776275186192",
+    "name": "Aswat Ram T S",
+    "email": "aswatramts.24cse@kongu.edu",
+    "password": "$2b$10$XZzATBCAxTh.ILhrx77yhOU5fyLXeUMudif40GJpGxVWYxNjC3ea6",
+    "role": "student",
+    "createdAt": "2026-04-15T17:46:26.193Z"
+  },
+  {
+    "id": "1776275628641",
+    "name": "Test Student",
+    "email": "studenttest@kongu.edu",
+    "password": "$2b$10$5UEw4WeuVGMSbR5FZDpIc.PzAzIEaKf5pjDeinwcvuUOJpuvkI7yq",
+    "role": "student",
+    "createdAt": "2026-04-15T17:53:48.641Z"
+  },
+  {
+    "id": "1776276289709",
+    "name": "Aswat Ram T S",
+    "email": "aswatram@kongu.edu",
+    "password": "$2b$10$lThc4gAVOlZI4P/ZJD2DBOXRyBdzqsKqgERcq6HBNMHgO30GeZwWy",
+    "role": "student",
+    "createdAt": "2026-04-15T18:04:49.709Z"
+  },
+  {
+    "id": "1776276453226",
+    "name": "Proxy Test",
+    "email": "proxy@kongu.edu",
+    "password": "$2b$10$tz8D7PBopwNFNCP6COHHl.0m1hRxiN3li4Yu5EUSk4rnrtHfYBv..",
+    "role": "student",
+    "createdAt": "2026-04-15T18:07:33.226Z"
+  },
+  {
+    "id": "1776276465603",
+    "name": "Proxy 2 Test",
+    "email": "proxy2@kongu.edu",
+    "password": "$2b$10$G5xEZda9eWmBMw.oCiaIgu0s3ufJ223YwmNepE6rSt/e.mPOUQChu",
+    "role": "student",
+    "createdAt": "2026-04-15T18:07:45.603Z"
+  },
+  {
+    "id": "1776276512756",
+    "name": "Local Test",
+    "email": "localtest@kongu.edu",
+    "password": "$2b$10$92olDaqIBsdEG5HtAVsXcuoye283.zKhACF7X75rigIUgvMNUburS",
+    "role": "student",
+    "createdAt": "2026-04-15T18:08:32.756Z"
   }
 ]

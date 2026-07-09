@@ -25,7 +25,12 @@ if (!fs.existsSync(UPLOADS_DIR)) fs.mkdirSync(UPLOADS_DIR, { recursive: true });
 // ─────────────────────────────────────────────
 //  Middleware
 // ─────────────────────────────────────────────
-app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
+app.use(cors({ 
+  origin: function(origin, callback) {
+    callback(null, true); // Allow any origin during development
+  }, 
+  credentials: true 
+}));
 app.use(express.json());
 app.use('/uploads', express.static(UPLOADS_DIR));
 
@@ -151,6 +156,80 @@ app.post('/api/auth/login', async (req, res) => {
 });
 
 // ═══════════════════════════════════════════
+//  USERS ROUTES (Profile & Settings)
+// ═══════════════════════════════════════════
+
+// ── GET /api/users/profile ────────────────
+app.get('/api/users/profile', async (req, res) => {
+  const { email } = req.query;
+  if (!email) return res.status(400).json({ message: 'Email required.' });
+
+  try {
+    const [rows] = await pool.query(
+      'SELECT id, name, email, role, department, email_notifs, sms_notifs, created_at FROM users WHERE email = ?',
+      [email.toLowerCase()]
+    );
+    if (rows.length === 0) return res.status(404).json({ message: 'User not found.' });
+    return res.json({ profile: rows[0] });
+  } catch (err) {
+    console.error('Fetch profile error:', err);
+    return res.status(500).json({ message: 'Server error.' });
+  }
+});
+
+// ── PUT /api/users/profile ────────────────
+app.put('/api/users/profile', async (req, res) => {
+  const { email, name, department, email_notifs, sms_notifs } = req.body;
+  if (!email) return res.status(400).json({ message: 'Email required.' });
+
+  try {
+    // We update name, department, and notification settings
+    await pool.query(
+      'UPDATE users SET name = ?, department = ?, email_notifs = ?, sms_notifs = ? WHERE email = ?',
+      [
+        name, 
+        department || null, 
+        email_notifs ? 1 : 0, 
+        sms_notifs ? 1 : 0, 
+        email.toLowerCase()
+      ]
+    );
+    return res.json({ message: 'Profile updated successfully.' });
+  } catch (err) {
+    console.error('Update profile error:', err);
+    return res.status(500).json({ message: 'Server error.' });
+  }
+});
+
+// ── PUT /api/users/password ───────────────
+app.put('/api/users/password', async (req, res) => {
+  const { email, currentPassword, newPassword } = req.body;
+  
+  if (!email || !currentPassword || !newPassword) {
+    return res.status(400).json({ message: 'All fields required.' });
+  }
+  if (newPassword.length < 6) {
+    return res.status(400).json({ message: 'New password must be at least 6 characters.' });
+  }
+
+  try {
+    const [users] = await pool.query('SELECT password FROM users WHERE email = ?', [email.toLowerCase()]);
+    if (users.length === 0) return res.status(404).json({ message: 'User not found.' });
+
+    const match = await bcrypt.compare(currentPassword, users[0].password);
+    if (!match) return res.status(401).json({ message: 'Incorrect current password.' });
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await pool.query('UPDATE users SET password = ? WHERE email = ?', [hashedPassword, email.toLowerCase()]);
+
+    return res.json({ message: 'Password updated successfully.' });
+  } catch (err) {
+    console.error('Change password error:', err);
+    return res.status(500).json({ message: 'Server error.' });
+  }
+});
+
+// ═══════════════════════════════════════════
 //  REPORTS ROUTES
 // ═══════════════════════════════════════════
 
@@ -252,6 +331,146 @@ app.patch('/api/reports/:id/status', async (req, res) => {
 
   } catch (err) {
     console.error('Update status error:', err);
+    return res.status(500).json({ message: 'Server error.' });
+  }
+});
+
+// ═══════════════════════════════════════════
+//  FOUND ITEMS & CLAIMS ROUTES
+// ═══════════════════════════════════════════
+
+// ── GET /api/found-items — all available found items ──
+app.get('/api/found-items', async (req, res) => {
+  try {
+    const [rows] = await pool.query(
+      `SELECT
+         id, category, location, found_date, description, image_url AS imageUrl, status, created_at AS createdAt
+       FROM found_items
+       ORDER BY created_at DESC`
+    );
+    return res.json({ foundItems: rows });
+  } catch (err) {
+    console.error('Fetch found items error:', err);
+    return res.status(500).json({ message: 'Server error.' });
+  }
+});
+
+// ── POST /api/found-items — admin uploads a found item ──
+app.post('/api/found-items', upload.single('image'), async (req, res) => {
+  const { category, location, date, description } = req.body;
+
+  if (!category || !location || !date || !description) {
+    return res.status(400).json({ message: 'All fields are required.' });
+  }
+
+  const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
+
+  try {
+    const [result] = await pool.query(
+      `INSERT INTO found_items
+         (category, location, found_date, description, image_url)
+       VALUES (?, ?, ?, ?, ?)`,
+      [category, location, date, description, imageUrl]
+    );
+
+    return res.status(201).json({
+      message: 'Found item uploaded successfully.',
+      itemId: result.insertId,
+    });
+  } catch (err) {
+    console.error('Upload found item error:', err);
+    return res.status(500).json({ message: 'Server error. Please try again.' });
+  }
+});
+
+// ── POST /api/found-items/:id/claim — student claims an item ──
+app.post('/api/found-items/:id/claim', upload.single('proofImage'), async (req, res) => {
+  const { id } = req.params;
+  const { email, name, studentId, phoneNumber, proofDesc } = req.body;
+
+  if (!email || !name || !studentId || !proofDesc) {
+    return res.status(400).json({ message: 'All required fields must be provided.' });
+  }
+
+  const proofImageUrl = req.file ? `/uploads/${req.file.filename}` : null;
+
+  try {
+    // Check if item is available
+    const [items] = await pool.query('SELECT status FROM found_items WHERE id = ?', [id]);
+    if (items.length === 0) return res.status(404).json({ message: 'Item not found.' });
+    if (items[0].status !== 'available') return res.status(400).json({ message: 'Item is not available for claim.' });
+
+    // Insert claim
+    const [result] = await pool.query(
+      `INSERT INTO claims
+         (found_item_id, student_email, phone_number, student_name, student_id, proof_desc, proof_image_url)
+       VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      [id, email.toLowerCase(), phoneNumber || null, name, studentId, proofDesc, proofImageUrl]
+    );
+
+    return res.status(201).json({ message: 'Claim submitted successfully.', claimId: result.insertId });
+  } catch (err) {
+    console.error('Submit claim error:', err);
+    return res.status(500).json({ message: 'Server error.' });
+  }
+});
+
+// ── GET /api/claims — admin gets all claims ──
+app.get('/api/claims', async (req, res) => {
+  try {
+    const [rows] = await pool.query(
+      `SELECT
+         c.id, c.found_item_id as foundItemId, c.student_email as studentEmail, c.phone_number as phoneNumber, c.student_name as studentName, c.student_id as studentId,
+         c.proof_desc as proofDesc, c.proof_image_url as proofImageUrl, c.status as claimStatus, c.created_at as createdAt,
+         f.category, f.location, f.description, f.image_url as imageUrl
+       FROM claims c
+       JOIN found_items f ON c.found_item_id = f.id
+       ORDER BY c.created_at DESC`
+    );
+    return res.json({ claims: rows });
+  } catch (err) {
+    console.error('Fetch claims error:', err);
+    return res.status(500).json({ message: 'Server error.' });
+  }
+});
+
+// ── PATCH /api/claims/:id/status — admin updates claim status ──
+app.patch('/api/claims/:id/status', async (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body; // 'approved' or 'rejected'
+
+  if (!['approved', 'rejected'].includes(status)) {
+    return res.status(400).json({ message: 'Invalid status.' });
+  }
+
+  try {
+    // Start transaction if approving, so we also update found_items
+    const connection = await pool.getConnection();
+    try {
+      await connection.beginTransaction();
+
+      await connection.query('UPDATE claims SET status = ? WHERE id = ?', [status, id]);
+
+      if (status === 'approved') {
+        // Find the found_item_id
+        const [claims] = await connection.query('SELECT found_item_id FROM claims WHERE id = ?', [id]);
+        if (claims.length > 0) {
+          const itemId = claims[0].found_item_id;
+          await connection.query('UPDATE found_items SET status = "claimed" WHERE id = ?', [itemId]);
+        }
+      }
+
+      await connection.commit();
+      connection.release();
+      return res.json({ message: `Claim ${status} successfully.` });
+
+    } catch (txErr) {
+      await connection.rollback();
+      connection.release();
+      throw txErr;
+    }
+  } catch (err) {
+    console.error('Update claim status error:', err);
     return res.status(500).json({ message: 'Server error.' });
   }
 });
